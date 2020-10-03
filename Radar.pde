@@ -1,3 +1,21 @@
+import hypermedia.net.*;
+
+//UDP Configuration
+final String HOST_IP = "192.168.4.2";
+final int HOST_PORT = 6780;
+String message = "";
+UDP udp;
+
+void receive(byte[] data)
+{
+  data = subset(data, 0, data.length-2);
+  message = new String(data);
+  String[] radarData = message.split(",");
+  iAngle = Integer.parseInt(radarData[0]);
+  iDistance = Integer.parseInt(radarData[1]);
+  //println(message);
+}
+
 int iAngle = 0;
 int iDistance = 0;
 float pixsDistance = 0.0;
@@ -12,6 +30,10 @@ void setup()
 {
   fullScreen();
   orientation(LANDSCAPE);   
+  udp = new UDP(this, HOST_PORT, HOST_IP);
+  udp.log(true);
+  udp.listen(true);
+  //noLoop();
 }
 
 void draw()
@@ -25,34 +47,36 @@ void draw()
   drawObject();
   drawText();
   
-  iDistance = (int)random(0, 100);
+  //iDistance = (int)random(15, 512);
+  angle[iAngle] = iAngle;
+  distance[iAngle] = iDistance;
   
-  if(flag)
-  {
-    iAngle++;
-    angle[iAngle] = iAngle;
-    distance[iAngle] = iDistance;
-  }
+  //if(flag)
+  //{
+  //  iAngle++;
+  //  angle[iAngle] = iAngle;
+  //  distance[iAngle] = iDistance;
+  //}
   
-  else
-  {
-    iAngle--;
+  //else
+  //{
+  //  iAngle--;
     
-    angle[iAngle] = iAngle;
-    distance[iAngle] = iDistance;
-  }
+  //  angle[iAngle] = iAngle;
+  //  distance[iAngle] = iDistance;
+  //}
   
-  if(iAngle >= 180)
-  {
-    flag = false;
-  }
+  //if(iAngle >= 180)
+  //{
+  //  flag = false;
+  //}
   
-  else if(iAngle == 0)
-  {
-    flag = true;
-  }
+  //else if(iAngle == 0)
+  //{
+  //  flag = true;
+  //}
   
-  delay(50);
+  //delay(25);
 }
 
 void drawRadar() 
@@ -97,7 +121,7 @@ void drawObject()
     strokeWeight(10);
     translate(960, 1000);
     pixsDistance = distance[i] * 22.5; 
-    stroke(255, 10, 10);
+    stroke(255, 0, 0);
     textSize(15);
     fill(98, 245, 60);
     if(distance[i] < 40)
